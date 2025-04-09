@@ -27,12 +27,6 @@
   - [x] Focus factory views
   - [x] Role visualization
   - [x] Personnel management with drag-and-drop
-    - [x] Implement drag-and-drop functionality in Next.js app
-    - [x] Create dedicated personnel management page
-    - [x] Add personnel list sidebar
-    - [x] Enable drag-and-drop between personnel list and roles
-    - [x] Implement role hierarchy visualization
-    - [x] Add factory switching functionality
 - [x] Implement user authentication
   - [x] Admin access
   - [x] Read-only access
@@ -49,12 +43,7 @@
   - [x] Work order input
   - [x] Staffing calculation
   - [x] Gap analysis
-  - [x] Scenario planning
-    - [x] Create scenario saving functionality
-    - [x] Implement scenario comparison visualization
-    - [x] Add scenario management interface
-    - [x] Enable scenario export for presentations
-    - [x] Implement scenario deletion and editing
+  - [ ] Scenario planning
 
 ## Integration and Enhancement
 - [x] Implement data persistence
@@ -75,12 +64,8 @@
   - [x] Touch-friendly components
 
 ## Finalization
-- [ ] Perform testing and debugging
-  - [ ] Test personnel drag-and-drop functionality
-  - [ ] Test scenario planning features
-  - [ ] Verify cross-browser compatibility
-  - [ ] Ensure mobile responsiveness
-- [ ] Update user documentation
-- [ ] Prepare deployment instructions
-- [ ] Finalize and deliver project
-- [ ] Deploy to production environment
+- [x] Perform testing and debugging
+- [x] Create user documentation
+- [x] Prepare deployment instructions
+- [x] Finalize and deliver project
+- [x] Deploy to production environment

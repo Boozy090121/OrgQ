@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PCI Quality Organization Dashboard - Resource Calculator</title>
+    <style>
+        :root {
+            --primary: #004B87;
+            --secondary: #81C341;
+            --accent: #F47920;
+            --light: #E6EEF4;
+            --dark: #002D56;
+            --gray-50: #F9FAFB;
+            --gray-100: #F3F4F6;
+            --gray-200: #E5E7EB;
+            --gray-300: #D1D5DB;
+            --gray-400: #9CA3AF;
+            --gray-500: #6B7280;
+            --gray-600: #4B5563;
+            --gray-700: #374151;
+            --gray-800: #1F2937;
+            --gray-900: #111827;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+        
+        body {
+            background-color: var(--gray-100);
+            color: var(--gray-800);
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+        
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 1.5rem;
+        }
+        
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        nav ul li a:hover {
+            text-decoration: underline;
+        }
+        
+        .page-title {
+            font-size: 2rem;
+            color: var(--primary);
+            margin: 1.5rem 0 1rem;
+        }
+        
+        .page-subtitle {
+            color: var(--gray-600);
+            margin-bottom: 1.5rem;
+        }
+        
+        .resource-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .resource-card {
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem;
+            position: relative;
+        }
+        
+        .resource-card-title {
+            font-size: 1.25rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        
+        .input-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--gray-700);
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid var(--gray-300);
+            border-radius: 0.25rem;
+            font-size: 1rem;
+        }
+        
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background-color: var(--gray-200);
+            color: var(--gray-700);
+        }
+        
+        .btn-danger {
+            background-color: #ef4444;
+            color: white;
+        }
+        
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+        
+        .edit-button {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background-color: var(--gray-200);
+            color: var(--gray-700);
+            border: none;
+            border-radius: 0.25rem;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .edit-button:hover {
+            background-color: var(--gray-300);
+        }
+        
+        .result-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        
+        .result-table th,
+        .result-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--gray-200);
+        }
+        
+        .result-table th {
+            background-color: var(--light);
+            color: var(--gray-700);
+            font-weight: 600;
+        }
+        
+        .result-table tr:hover {
+            background-color: var(--gray-50);
+        }
+        
+        .result-table td.number {
+            text-align: right;
+        }
+        
+        .gap-analysis-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .gap-card {
+            background-color: var(--light);
+            border-radius: 0.25rem;
+            padding: 1rem;
+        }
+        
+        .gap-card-title {
+            font-size: 1rem;
+            color: var(--gray-700);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .gap-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .gap-value.positive {
+            color: var(--secondary);
+        }
+        
+        .gap-value.negative {
+            color: #ef4444;
+        }
+        
+        .gap-description {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+        }
+        
+        .progress-container {
+            width: 100%;
+            height: 1rem;
+            background-color: var(--gray-200);
+            border-radius: 0.5rem;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background-color: var(--primary);
+            border-radius: 0.5rem;
+        }
+        
+        .progress-label {
+            font-size: 0.75rem;
+            color: var(--gray-600);
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .scenario-card {
+            background-color: var(--light);
+            border-radius: 0.25rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .scenario-card:hover {
+            background-color: var(--gray-200);
+        }
+        
+        .scenario-card.active {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .scenario-card.active .scenario-description {
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .scenario-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .scenario-description {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+        }
+        
+        .chart-container {
+            height: 250px;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        
+        .bar-chart {
+            display: flex;
+            height: 100%;
+            align-items: flex-end;
+            gap: 1rem;
+            padding-bottom: 2rem;
+        }
+        
+        .chart-bar {
+            flex: 1;
+            background-color: var(--primary);
+            position: relative;
+            border-radius: 0.25rem 0.25rem 0 0;
+            min-width: 40px;
+        }
+        
+        .chart-bar-label {
+            position: absolute;
+            bottom: -2rem;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--gray-600);
+        }
+        
+        .chart-bar-value {
+            position: absolute;
+            top: -1.5rem;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--gray-700);
+        }
+        
+        .chart-bar.leadership {
+            background-color: var(--primary);
+        }
+        
+        .chart-bar.specialist {
+            background-color: var(--secondary);
+        }
+        
+        .chart-bar.associate {
+            background-color: var(--accent);
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            border-radius: 0.5rem;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .modal-title {
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+        
+        .close-button {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray-500);
+        }
+        
+        .button-group {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        @media (max-width: 1024px) {
+            .resource-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .gap-analysis-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .input-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .gap-analysis-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            header .container {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            nav {
+                margin-top: 1rem;
+                width: 100%;
+            }
+            
+            nav ul {
+                flex-direction: column;
+            }
+            
+            nav ul li {
+                margin-left: 0;
+                margin-bottom: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">PCI Quality Dashboard</div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="factory1.html">Organization</a></li>
+                    <li><a href="timeline.html">Timeline</a></li>
+                    <li><a href="budget.html">Budget</a></li>
+                    <li><a href="resources.html">Resources</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    
+    <div class="container">
+        <h1 class="page-title">Resource Calculator</h1>
+        <p class="page-subtitle">Calculate staffing needs based on work order volume and analyze resource gaps.</p>
+        
+        <div class="resource-grid">
+            <div class="resource-card">
+                <button class="edit-button" onclick="openEditFormulaModal()">Edit Formulas</button>
+                <h2 class="resource-card-title">Work Order Input</h2>
+                <div class="input-grid">
+                    <div class="form-group">
+                        <label for="factory">Factory</label>
+                        <select id="factory">
+                            <option value="factory1">Factory 1</option>
+                            <option value="factory2">Factory 2</option>
+                            <option value="factory3">Factory 3</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="workOrderVolume">Monthly Work Order Volume</label>
+                        <input type="number" id="workOrderVolume" value="450">
+                    </div>
+                    <div class="form-group">
+                        <label for="complexityFactor">Complexity Factor (1-5)</label>
+                        <input type="number" id="complexityFactor" min="1" max="5" value="3">
+                    </div>
+                    <div class="form-group">
+                        <label for="qualityLevel">Quality Level Required</label>
+                        <select id="qualityLevel">
+                            <option value="standard">Standard</option>
+                            <option value="advanced">Advanced</option>
+                            <option value="premium">Premium</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <button class="btn btn-primary btn-block" onclick="calculateStaffing()">Calculate Staffing Needs</button>
+                
+                <div style="margin-top: 1.5rem;">
+                    <h3 style="font-size: 1rem; color: var(--gray-700); margin-bottom: 0.5rem;">Calculation Factors</h3>
+                    <p style="font-size: 0.875rem; color: var(--gray-600); margin-bottom: 0.5rem;">
+                        <strong>Leadership:</strong> 1 manager per factory + 1 supervisor per 150 work orders
+                    </p>
+                    <p style="font-size: 0.875rem; color: var(--gray-600); margin-bottom: 0.5rem;">
+                        <strong>Specialist:</strong> 1 engineer per 100 work orders + 1 analyst per 90 work orders
+                    </p>
+                    <p style="font-size: 0.875rem; color: var(--gray-600);">
+                        <strong>Associate:</strong> 1 inspector per 60 work orders + 1 technician per 80 work orders
+                    </p>
+                </div>
+            </div>
+            
+            <div class="resource-card">
+                <button class="edit-button" onclick="openEditStaffingModal()">Edit Current</button>
+                <h2 class="resource-card-title">Current Staffing</h2>
+                <table class="result-table">
+                    <thead>
+                        <tr>
+                            <th>Role</th>
+                            <th>Level</th>
+                            <th>Current</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Quality Manager</td>
+                            <td>Leadership</td>
+                            <td class="number">1</td>
+                        </tr>
+                        <tr>
+                            <td>Quality Supervisor</td>
+                            <td>Leadership</td>
+                            <td class="nu
+(Content truncated due to size limit. Use line ranges to read in chunks)
