@@ -1,17 +1,24 @@
-import React from 'react';
-import { Sidebar } from '@/components/layout/SidebarExtended';
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+import './globals.css';
 
-interface DashboardLayoutProps {
+const inter = Inter({ subsets: ['latin'] });
+
+export const metadata: Metadata = {
+  title: 'PCI Quality Organization Dashboard',
+  description: 'Dashboard for visualizing, managing, and planning the reorganization of PCI\'s quality department',
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
   children: React.ReactNode;
-}
-
-export default function DashboardLayout({ children }: DashboardLayoutProps) {
+}>) {
   return (
-    <div className="flex h-screen bg-gray-100">
-      <Sidebar />
-      <div className="flex-1 overflow-auto">
+    <html lang="en">
+      <body className={inter.className}>
         {children}
-      </div>
-    </div>
+      </body>
+    </html>
   );
 }
